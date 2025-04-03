@@ -1,0 +1,2 @@
+E:/ITM/Semestre 9/Desarrollo de aplicaciones moviles/Unidad II/Cosas del proyecto/my_wallet/android/app/.cxx/Debug/6w13s1b4/arm64-v8a/CMakeFiles/edit_cache.dir
+E:/ITM/Semestre 9/Desarrollo de aplicaciones moviles/Unidad II/Cosas del proyecto/my_wallet/android/app/.cxx/Debug/6w13s1b4/arm64-v8a/CMakeFiles/rebuild_cache.dir

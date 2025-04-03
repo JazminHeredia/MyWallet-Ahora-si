@@ -1,0 +1,2 @@
+C:/MyWallet-Ahora-si-main/android/app/.cxx/Debug/5r2ai681/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/MyWallet-Ahora-si-main/android/app/.cxx/Debug/5r2ai681/armeabi-v7a/CMakeFiles/rebuild_cache.dir
