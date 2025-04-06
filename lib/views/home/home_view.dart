@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-=======
-import 'package:fl_chart/fl_chart.dart';
->>>>>>> 46837361e2e85a8354d5db15024d6cf49dcfdcee
+import 'menu/menu.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -18,35 +15,8 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.green,
-        title: const Text('My Wallet'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              // Acción para agregar
-            },
-          ),
-          
-        ],
-      ),
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.green),
-              child: Text('Menú', style: TextStyle(color: Colors.white)),
-            ),
-            ListTile(
-              title: const Text('Opción 1'),
-              onTap: () {
-                // Acción para opción 1
-              },
-            ),
-          ],
-        ),
-      ),
+      appBar: const CustomAppBar(),
+      drawer: const CustomDrawer(),
       body: Column(
         children: [
           Padding(
@@ -115,25 +85,6 @@ class _HomeViewState extends State<HomeView> {
                   ],
                 ),
                 const SizedBox(height: 16),
-<<<<<<< HEAD
-               
-=======
-                AspectRatio(
-                  aspectRatio: 1.3,
-                  child: PieChart(
-                    PieChartData(
-                      sections: [
-                        PieChartSectionData(value: 25, color: Colors.lightGreen, title: '25%'),
-                        PieChartSectionData(value: 25, color: Colors.green, title: '25%'),
-                        PieChartSectionData(value: 25, color: Colors.teal, title: '25%'),
-                        PieChartSectionData(value: 25, color: Colors.lime, title: '25%'),
-                      ],
-                      sectionsSpace: 2,
-                      centerSpaceRadius: 40,
-                    ),
-                  ),
-                ),
->>>>>>> 46837361e2e85a8354d5db15024d6cf49dcfdcee
               ],
             ),
           ),
