@@ -113,21 +113,7 @@ class CustomDrawer extends StatelessWidget {
                     
                   },
                 ),
-                ListTile(
-                  leading: const Icon(Icons.bar_chart, 
-                    color: Colors.green,
-                  ),
-                  title: const Text('Gráficos', 
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    )
-                  ),
-                  onTap: () {
-                  //  Navigator.pop(context);
-                  //  context.go('/graphics');
-                  },
-                ),
+               
                 ListTile(
                   leading: const Icon(Icons.category, 
                     color: Colors.green,
