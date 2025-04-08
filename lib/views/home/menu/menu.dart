@@ -125,8 +125,8 @@ class CustomDrawer extends StatelessWidget {
                     )
                   ),
                   onTap: () {
-                   // Navigator.pop(context);
-                   // context.go('/categories');
+                    Navigator.pop(context);
+                    context.go('/transactions');
                   },
                 ),
                 ListTile(

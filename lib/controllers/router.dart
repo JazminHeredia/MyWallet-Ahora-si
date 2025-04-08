@@ -2,6 +2,7 @@
 import 'package:go_router/go_router.dart';
 import '../views/login/login_view.dart';
 import '../views/home/home_view.dart';
+import '../views/transaction/transaction.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -15,6 +16,10 @@ class AppRouter {
         path: '/home',
         builder: (context, state) => const HomeView(),
       ),
+      GoRoute(
+        path: '/transactions',
+        builder: (context, state) => const TransactionView(),
+      )
     ],
   );
 }
