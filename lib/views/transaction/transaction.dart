@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class TransactionView extends StatefulWidget {
   const TransactionView({super.key});
@@ -189,20 +191,63 @@ class _TransactionViewState extends State<TransactionView> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formKey.currentState!.validate()) {
+                              final user = FirebaseAuth.instance.currentUser;
+                              if (user == null) {
+                                //ignore: avoid_print
+                                print('Error: Usuario no autenticado');
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Usuario no autenticado')),
+                                );
+                                return;
+                              }
+                              //ignore: avoid_print
+                              print('UID del usuario autenticado: ${user.uid}');
+
                               final newTransaction = {
                                 'name': _nameController.text.trim(),
                                 'description': _descriptionController.text.trim(),
                                 'amount': double.parse(_amountController.text.trim()),
+                                'category': _selectedCategory,
                                 'type': _selectedType,
-                                'date': _selectedDate,
+                                'date': _selectedDate.toIso8601String(),
+                                'userId': user.uid, // UID del usuario autenticado
                               };
-                              Navigator.pop(context, newTransaction);
+                              //ignore: avoid_print
+                              print('Datos enviados a Firestore: $newTransaction');
+
+                              try {
+                                await FirebaseFirestore.instance
+                                    .collection('transactions')
+                                    .add(newTransaction);
+
+                                // Mostrar mensaje de éxito
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Transacción guardada con éxito')),
+                                );
+
+                                // Limpiar los campos del formulario
+                                _nameController.clear();
+                                _descriptionController.clear();
+                                _amountController.clear();
+                                setState(() {
+                                  _selectedCategory = null;
+                                  _selectedType = 'Gasto';
+                                  _selectedDate = DateTime.now();
+                                });
+                              } catch (e) {
+                                //ignore: avoid_print
+                                print('Error al guardar en Firestore: $e');
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Error al guardar: $e')),
+                                );
+                              }
                             }
                           },
                           icon: const Icon(Icons.save),
                           label: const Text('Guardar'),
+                     // Navega a la pantalla "Home" usando go_router
                         ),
                       ],
                     ),

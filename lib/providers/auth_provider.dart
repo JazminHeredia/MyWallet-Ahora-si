@@ -41,8 +41,22 @@ class AuthProvider with ChangeNotifier {
         email: _email,
         password: _password,
       );
+
+      // Guardar usuario en Firestore
+      if (userCredential.user != null) {
+        await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
+          'uid': userCredential.user!.uid,
+          'email': userCredential.user!.email,
+          'displayName': userCredential.user!.displayName ?? '',
+          'photoURL': userCredential.user!.photoURL ?? '',
+          'createdAt': FieldValue.serverTimestamp(),
+          'lastLogin': FieldValue.serverTimestamp(),
+        });
+      }
+
       return userCredential.user;
     } catch (e) {
+      // ignore: avoid_print
       print('Error during registration: $e');
       return null;
     }
@@ -54,8 +68,17 @@ class AuthProvider with ChangeNotifier {
         email: _email,
         password: _password,
       );
+
+      // Actualizar último inicio de sesión
+      if (userCredential.user != null) {
+        await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
+          'lastLogin': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+      }
+
       return userCredential.user;
     } catch (e) {
+      // ignore: avoid_print
       print('Error during email/password login: $e');
       return null;
     }
@@ -83,19 +106,21 @@ class AuthProvider with ChangeNotifier {
 
       UserCredential userCredential = await _firebaseAuth.signInWithCredential(credential);
 
-      // Save user to Firestore after Google Sign-In
+      // Guardar o actualizar usuario en Firestore
       if (userCredential.user != null) {
         await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
           'uid': userCredential.user!.uid,
           'email': userCredential.user!.email,
-          'displayName': userCredential.user!.displayName,
-          'photoURL': userCredential.user!.photoURL,
-          'createdAt': FieldValue.serverTimestamp(),
+          'displayName': userCredential.user!.displayName ?? '',
+          'photoURL': userCredential.user!.photoURL ?? '',
+          'createdAt': FieldValue.serverTimestamp(), // Solo se establece en la primera creación
+          'lastLogin': FieldValue.serverTimestamp(),
         }, SetOptions(merge: true));
       }
 
       return userCredential.user;
     } catch (e) {
+      // ignore: avoid_print
       print('Error during Google Sign-In: $e');
       return null;
     } finally {
@@ -118,6 +143,7 @@ class AuthProvider with ChangeNotifier {
           await FirebaseAuth.instance.signInWithCredential(credential);
       return userCredential.user;
     } catch (e) {
+      // ignore: avoid_print
       print('Error during Google sign-in: $e');
       return null;
     } finally {
@@ -130,6 +156,7 @@ class AuthProvider with ChangeNotifier {
       await _firebaseAuth.signOut();
       await GoogleSignIn().signOut(); // Ensure Google Sign-Out
     } catch (e) {
+      // ignore: avoid_print
       print('Error during sign-out: $e');
     }
   }
@@ -146,7 +173,27 @@ class AuthProvider with ChangeNotifier {
         'createdAt': FieldValue.serverTimestamp(),
       });
     } catch (e) {
+      // ignore: avoid_print
       print('Error saving user to database: $e');
     }
+  }
+
+  String? getCurrentUserId() {
+    final user = _firebaseAuth.currentUser;
+    if (user == null) {
+      // ignore: avoid_print
+      print('Error: No hay un usuario autenticado.');
+      return null;
+    }
+    // ignore: avoid_print
+    print('UID del usuario autenticado: ${user.uid}');
+    return user.uid;
+  }
+
+  bool isUserAuthenticated() {
+    final isAuthenticated = _firebaseAuth.currentUser != null;
+    // ignore: avoid_print
+    print('Usuario autenticado: $isAuthenticated');
+    return isAuthenticated;
   }
 }

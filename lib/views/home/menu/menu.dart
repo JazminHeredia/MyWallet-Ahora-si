@@ -16,7 +16,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           icon: const Icon(Icons.add),
           onPressed: () {
-            // Acción para agregar
+           context.go('/transactions'); 
           },
         ),
       ],
@@ -100,21 +100,6 @@ class CustomDrawer extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                  leading: const Icon(Icons.account_balance_wallet, 
-                    color: Colors.green,
-                  ),
-                  title: const Text('Cuentas', 
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    )
-                  ),
-                  onTap: () {
-                    
-                  },
-                ),
-               
-                ListTile(
                   leading: const Icon(Icons.category, 
                     color: Colors.green,
                   ),
@@ -125,8 +110,7 @@ class CustomDrawer extends StatelessWidget {
                     )
                   ),
                   onTap: () {
-                    Navigator.pop(context);
-                    context.go('/transactions');
+                    
                   },
                 ),
                 ListTile(
