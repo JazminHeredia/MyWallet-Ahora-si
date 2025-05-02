@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:my_wallet/model/budget_model.dart'; // Importa el modelo de presupuesto
 
-class BudgetScreen extends StatelessWidget {
-  const BudgetScreen({super.key});
+class BudgetView extends StatelessWidget {
+  const BudgetView({super.key});
+
 
   @override
   Widget build(BuildContext context) {

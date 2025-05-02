@@ -1,0 +1,2 @@
+C:/Users/a2149/Documents/Desarollo de aplicaciones moviles/WyWallet OFICIAL Jazmin/MyWallet-Ahora-si/android/app/.cxx/Debug/655f3m70/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/a2149/Documents/Desarollo de aplicaciones moviles/WyWallet OFICIAL Jazmin/MyWallet-Ahora-si/android/app/.cxx/Debug/655f3m70/armeabi-v7a/CMakeFiles/rebuild_cache.dir

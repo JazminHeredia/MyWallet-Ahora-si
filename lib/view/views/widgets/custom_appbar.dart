@@ -16,7 +16,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           icon: const Icon(Icons.add),
           onPressed: () {
-            // Acción para agregar
+           context.go('/TransactionView'); 
           },
         ),
       ],
@@ -40,54 +40,113 @@ class CustomDrawer extends StatelessWidget {
           Expanded(
             child: ListView(
               children: [
-                UserAccountsDrawerHeader(
+                Container(
+                  padding: const EdgeInsets.all(16),
                   decoration: const BoxDecoration(color: Colors.green),
-                  accountName: Text(
-                    'Hola, ${user?.displayName ?? "Usuario"}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold
-                    ),
-                  ),
-                  accountEmail: Text(
-                    user?.email ?? "",
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                  currentAccountPicture: CircleAvatar(
-                    backgroundColor: Colors.white,
-                    backgroundImage: user?.photoURL != null 
-                      ? NetworkImage(user!.photoURL!) 
-                      : null,
-                    child: user?.photoURL == null 
-                      ? const Icon(Icons.person, size: 40, color: Colors.green)
-                      : null,
+                  height: 110,
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Colors.white,
+                        backgroundImage: user?.photoURL != null 
+                          ? NetworkImage(user!.photoURL!) 
+                          : null,
+                        child: user?.photoURL == null 
+                          ? const Icon(Icons.person, size: 40, color: Colors.green)
+                          : null,
+                      ),
+                      const SizedBox(width: 9),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              user?.displayName ?? "Usuario",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              user?.email ?? "",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 ListTile(
-                  leading: const Icon(Icons.account_balance_wallet, 
+                  leading: const Icon(Icons.home, 
                     color: Colors.green,
                   ),
-                  title: const Text('Cuentas', 
+                  title: const Text('Inicio', 
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     )
                   ),
                   onTap: () {
-                    
+                    Navigator.pop(context); // Cerrar el drawer
+                    context.go('/home');
                   },
                 ),
                 ListTile(
-                  title: const Text('Opción 1'),
+                  leading: const Icon(Icons.category, 
+                    color: Colors.green,
+                  ),
+                  title: const Text('Categorías', 
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    )
+                  ),
                   onTap: () {
-                    // Acción para opción 1
+                    Navigator.pop(context); // Cerrar el drawer
+                    context.go('/budget'); // Navegar a la vista de categorías
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.trending_up, 
+                    color: Colors.green,
+                  ),
+                  title: const Text('Tendencia de gastos', 
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    )
+                  ),
+                  onTap: () {
+                   // Navigator.pop(context);
+                   // context.go('/spending-trends');
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.notifications, 
+                    color: Colors.green,
+                  ),
+                  title: const Text('Alertas', 
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    )
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    context.go('/budget'); // Navegar a la vista de alertas
                   },
                 ),
               ],
             ),
           ),
-          // ignore: avoid_unnecessary_containers
           Container(
             child: Align(
               alignment: FractionalOffset.bottomCenter,
@@ -107,15 +166,15 @@ class CustomDrawer extends StatelessWidget {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: const Text('Cerrar sesión'),
-                          content: const Text('¿Está seguro que desea cerrar sesión?'),
+                          
+                          content: const Text('¿Cerrar la sesión de tu cuenta?'),
                           actions: [
                             TextButton(
                               child: const Text('Cancelar'),
                               onPressed: () => Navigator.of(context).pop(false),
                             ),
                             TextButton(
-                              child: const Text('Sí, cerrar sesión'),
+                              child: const Text('Cerrar sesión'),
                               onPressed: () => Navigator.of(context).pop(true),
                             ),
                           ],
