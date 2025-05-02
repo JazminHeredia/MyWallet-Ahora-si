@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-//import 'package:my_wallet/views/home/home_view.dart';
+import 'package:my_wallet/service/provider/auth_provider.dart';
 import 'package:provider/provider.dart';
-import 'providers/auth_provider.dart';
-import 'controllers/router.dart'; // Added import for the router
+import 'package:my_wallet/config/router/app_router.dart';
+import 'package:my_wallet/config/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(); // Inicializa Firebase
-  runApp(const MyApp());
+    await Firebase.initializeApp(); // Inicializa Firebase solo para Android
+
+  runApp(const MainApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+// clase principal de la aplicación
+class MainApp extends StatelessWidget {
+  const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +25,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         title: 'My Wallet',
-        theme: ThemeData(primarySwatch: Colors.green),
-        routerConfig: AppRouter.router, // Use AppRouter for routing
+        theme: appTheme,
+        routerConfig: appRouter,
       ),
     );
-
-}
+  }
 }

@@ -1,0 +1,2 @@
+C:/Users/metro/OneDrive/Documentos/Desarrollo de aplicaciones moviles/MyWallet-Ahora-si/android/app/.cxx/Debug/85y1r676/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/metro/OneDrive/Documentos/Desarrollo de aplicaciones moviles/MyWallet-Ahora-si/android/app/.cxx/Debug/85y1r676/armeabi-v7a/CMakeFiles/rebuild_cache.dir
