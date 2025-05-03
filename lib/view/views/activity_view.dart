@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:my_wallet/controller/activity_controller.dart';
 
 class TransactionView extends StatefulWidget {
   const TransactionView({super.key});
@@ -11,14 +10,7 @@ class TransactionView extends StatefulWidget {
 }
 
 class _TransactionViewState extends State<TransactionView> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _descriptionController = TextEditingController();
-  final _amountController = TextEditingController();
-  DateTime _selectedDate = DateTime.now();
-  String _selectedType = 'Gasto';
-  final List<String> _categories = ['Alimentos', 'Transporte', 'Entretenimiento', 'Salud'];
-  String? _selectedCategory;
+  final _controller = TransactionController();
 
   @override
   Widget build(BuildContext context) {
@@ -31,16 +23,16 @@ class _TransactionViewState extends State<TransactionView> {
         ),
       ),
       child: Scaffold(
-        backgroundColor: Colors.transparent, // Ensure transparency for gradient
+        backgroundColor: Colors.transparent,
         appBar: AppBar(
           centerTitle: true,
-          backgroundColor: Colors.green[700], // Transparent to show gradient
-          elevation: 0, // Remove shadow for seamless gradient
+          backgroundColor: Colors.green[700],
+          elevation: 0,
           title: const Text('Agregar Transacción'),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
-              context.go('/home'); // Navega a la pantalla "Home" usando go_router
+              context.go('/home');
             },
           ),
           shape: const RoundedRectangleBorder(
@@ -60,13 +52,12 @@ class _TransactionViewState extends State<TransactionView> {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Form(
-                    key: _formKey,
+                    key: _controller.formKey,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // Campo Nombre
                         TextFormField(
-                          controller: _nameController,
+                          controller: _controller.nameController,
                           decoration: const InputDecoration(
                             labelText: 'Nombre',
                             filled: true,
@@ -78,10 +69,8 @@ class _TransactionViewState extends State<TransactionView> {
                               value!.isEmpty ? 'Por favor ingresa un nombre' : null,
                         ),
                         const SizedBox(height: 12),
-
-                        // Campo Descripción
                         TextFormField(
-                          controller: _descriptionController,
+                          controller: _controller.descriptionController,
                           decoration: const InputDecoration(
                             labelText: 'Descripción',
                             filled: true,
@@ -91,10 +80,8 @@ class _TransactionViewState extends State<TransactionView> {
                           ),
                         ),
                         const SizedBox(height: 12),
-
-                        // Campo Monto
                         TextFormField(
-                          controller: _amountController,
+                          controller: _controller.amountController,
                           keyboardType: TextInputType.number,
                           decoration: const InputDecoration(
                             labelText: 'Monto',
@@ -115,10 +102,8 @@ class _TransactionViewState extends State<TransactionView> {
                           },
                         ),
                         const SizedBox(height: 12),
-
-                        // Selector de Categorías
                         DropdownButtonFormField<String>(
-                          value: _selectedCategory,
+                          value: _controller.selectedCategory,
                           decoration: const InputDecoration(
                             labelText: 'Categoría',
                             filled: true,
@@ -126,7 +111,7 @@ class _TransactionViewState extends State<TransactionView> {
                             suffixIcon: Icon(Icons.category_outlined),
                             contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                           ),
-                          items: _categories
+                          items: _controller.categories
                               .map((category) => DropdownMenuItem(
                                     value: category,
                                     child: Text(category),
@@ -134,17 +119,15 @@ class _TransactionViewState extends State<TransactionView> {
                               .toList(),
                           onChanged: (value) {
                             setState(() {
-                              _selectedCategory = value;
+                              _controller.selectedCategory = value;
                             });
                           },
                           validator: (value) =>
                               value == null ? 'Por favor selecciona una categoría' : null,
                         ),
                         const SizedBox(height: 12),
-
-                        // Selector de Tipo
                         DropdownButtonFormField<String>(
-                          value: _selectedType,
+                          value: _controller.selectedType,
                           decoration: const InputDecoration(
                             labelText: 'Tipo',
                             filled: true,
@@ -160,15 +143,16 @@ class _TransactionViewState extends State<TransactionView> {
                               .toList(),
                           onChanged: (value) {
                             setState(() {
-                              _selectedType = value!;
+                              _controller.selectedType = value!;
                             });
                           },
                         ),
                         const SizedBox(height: 12),
-
-                        // Selector de Fecha
                         InkWell(
-                          onTap: () => _selectDate(context),
+                          onTap: () async {
+                            await _controller.selectDate(context);
+                            setState(() {}); // Actualizar la vista al cambiar la fecha
+                          },
                           child: InputDecorator(
                             decoration: const InputDecoration(
                               labelText: 'Fecha',
@@ -181,15 +165,13 @@ class _TransactionViewState extends State<TransactionView> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
+                                  '${_controller.selectedDate.day}/${_controller.selectedDate.month}/${_controller.selectedDate.year}',
                                 ),
                               ],
                             ),
                           ),
                         ),
                         const SizedBox(height: 20),
-
-                        // Botón Guardar
                         ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green[700],
@@ -199,63 +181,9 @@ class _TransactionViewState extends State<TransactionView> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
-                              final user = FirebaseAuth.instance.currentUser;
-                              if (user == null) {
-                                //ignore: avoid_print
-                                print('Error: Usuario no autenticado');
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Usuario no autenticado')),
-                                );
-                                return;
-                              }
-                              //ignore: avoid_print
-                              print('UID del usuario autenticado: ${user.uid}');
-
-                              final newTransaction = {
-                                'name': _nameController.text.trim(),
-                                'description': _descriptionController.text.trim(),
-                                'amount': double.parse(_amountController.text.trim()),
-                                'category': _selectedCategory,
-                                'type': _selectedType,
-                                'date': _selectedDate.toIso8601String(),
-                                'userId': user.uid, // UID del usuario autenticado
-                              };
-                              //ignore: avoid_print
-                              print('Datos enviados a Firestore: $newTransaction');
-
-                              try {
-                                await FirebaseFirestore.instance
-                                    .collection('transactions')
-                                    .add(newTransaction);
-
-                                // Mostrar mensaje de éxito
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Transacción guardada con éxito')),
-                                );
-
-                                // Limpiar los campos del formulario
-                                _nameController.clear();
-                                _descriptionController.clear();
-                                _amountController.clear();
-                                setState(() {
-                                  _selectedCategory = null;
-                                  _selectedType = 'Gasto';
-                                  _selectedDate = DateTime.now();
-                                });
-                              } catch (e) {
-                                //ignore: avoid_print
-                                print('Error al guardar en Firestore: $e');
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Error al guardar: $e')),
-                                );
-                              }
-                            }
-                          },
+                          onPressed: () => _controller.saveTransaction(context),
                           icon: const Icon(Icons.save),
                           label: const Text('Guardar'),
-                     // Navega a la pantalla "Home" usando go_router
                         ),
                       ],
                     ),
@@ -267,19 +195,5 @@ class _TransactionViewState extends State<TransactionView> {
         ),
       ),
     );
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-      });
-    }
   }
 }
