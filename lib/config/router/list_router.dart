@@ -1,4 +1,3 @@
-//import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:my_wallet/view/views_list.dart';
 
@@ -22,5 +21,15 @@ final List<RouteBase> routes = [
     path: '/budget',
     name: 'BudgetView',
     builder: (context, state) => BudgetView(),
+  ),
+  GoRoute(
+    path: '/expense_trends',
+    name: 'Expense_trends',
+    builder: (context, state) => ExpenseTrends(),
+  ),
+  GoRoute(
+    path: '/categories',
+    name: 'CategoriesView',
+    builder: (context, state) => CreateCategoryView(),
   ),
 ];

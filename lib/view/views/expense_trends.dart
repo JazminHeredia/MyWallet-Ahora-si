@@ -1,34 +1,148 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:my_wallet/controller/expense_controller.dart';
+import 'dart:math';
 
-class ExpenseTrends extends StatelessWidget {
-  final List<FlSpot> data = const [
-    FlSpot(0, 20),
-    FlSpot(1, 30),
-    FlSpot(2, 40),
-    FlSpot(3, 25),
-    FlSpot(4, 50),
-  ];
-
+class ExpenseTrends extends StatefulWidget {
   const ExpenseTrends({super.key});
 
   @override
+  State<ExpenseTrends> createState() => _ExpenseTrendsState();
+}
+
+class _ExpenseTrendsState extends State<ExpenseTrends> {
+  final ExpenseController _expenseController = ExpenseController();
+  Map<String, List<double>> _categoryTrends = {};
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchTrends();
+  }
+
+  Future<void> _fetchTrends() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      try {
+        final trends = await _expenseController.getExpenseTrends(user.uid);
+        setState(() {
+          _categoryTrends = trends;
+          _isLoading = false;
+        });
+      } catch (e) {
+        setState(() {
+          _isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al cargar las tendencias: $e')),
+        );
+      }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  List<PieChartSectionData> _buildPieChartSections() {
+    final totalPerCategory = <String, double>{};
+    for (var entry in _categoryTrends.entries) {
+      totalPerCategory[entry.key] = entry.value.fold(0.0, (sum, item) => sum + item);
+    }
+
+    final total = totalPerCategory.values.fold(0.0, (sum, item) => sum + item);
+
+    final random = Random();
+    int index = 0;
+
+    return totalPerCategory.entries.map((entry) {
+      final percentage = total == 0 ? 0 : (entry.value / total * 100).round();
+      return PieChartSectionData(
+        color: Colors.primaries[index++ % Colors.primaries.length],
+        value: entry.value,
+        title: '$percentage%',
+        radius: 100,
+        titleStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+      );
+    }).toList();
+  }
+
+  Widget _buildLegend() {
+    final random = Random();
+    int index = 0;
+
+    return Column(
+      children: _categoryTrends.keys.map((category) {
+        final color = Colors.primaries[index++ % Colors.primaries.length];
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              color: color,
+            ),
+            const SizedBox(width: 8),
+            Text(category, style: const TextStyle(fontSize: 24)),
+          ],
+        );
+      }).toList(),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return LineChart(
-      LineChartData(
-        gridData: FlGridData(show: true),
-        titlesData: FlTitlesData(show: true),
-        borderData: FlBorderData(show: true),
-        minX: 0,
-        maxX: 4,
-        minY: 0,
-        maxY: 60,
-        lineBarsData: [
-          LineChartBarData(
-            spots: data,
-            isCurved: true,
-            color: Colors.blue,
-            barWidth: 4,
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_categoryTrends.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text('Tendencias de Gastos'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              context.go('/home');
+            },
+          ),
+        ),
+        body: const Center(
+          child: Text('No hay datos disponibles para mostrar.'),
+        ),
+      );
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text('Tendencia de Gastos'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            context.go('/home');
+          },
+        ),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _buildLegend(),
+          const SizedBox(height: 20),
+          Expanded(
+            child: Center(
+              child: PieChart(
+                PieChartData(
+                  sections: _buildPieChartSections(),
+                  centerSpaceRadius: 50,
+                  sectionsSpace: 2,
+                ),
+              ),
+            ),
           ),
         ],
       ),

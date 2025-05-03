@@ -4,3 +4,4 @@ export 'package:my_wallet/view/views/activity_view.dart';
 export 'package:my_wallet/view/views/expense_trends.dart';
 export 'package:my_wallet/view/views/settings_view.dart';
 export 'package:my_wallet/view/views/budget_view.dart';
+export 'package:my_wallet/view/views/categories_view.dart';

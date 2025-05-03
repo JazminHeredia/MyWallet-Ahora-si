@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:my_wallet/model/home_model.dart'; // Importa el modelo
 import 'package:my_wallet/view/views/widgets/custom_appbar.dart';
 
-
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
@@ -229,7 +228,17 @@ class _HomeViewState extends State<HomeView> {
                     );
                   },
                 ),
+                /*
                 const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ExpenseTrends()),
+                    );
+                  },
+                  child: const Text('Ver Tendencias de Gastos'),
+                ),*/
               ],
             ),
           ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:my_wallet/service/firestore_service.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Librería de Firebase para autenticación
+import 'package:google_sign_in/google_sign_in.dart'; // Librería para autenticación con Google
+import 'package:my_wallet/service/firestore_service.dart'; // Importa el servicio de Firestore para guardar datos
 import 'package:my_wallet/model/login_model.dart'; // Importa el modelo que contiene los datos del usuario
 
 class AuthProvider with ChangeNotifier {

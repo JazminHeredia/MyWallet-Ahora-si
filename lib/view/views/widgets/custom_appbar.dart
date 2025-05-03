@@ -16,7 +16,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           icon: const Icon(Icons.add),
           onPressed: () {
-           context.go('/TransactionView'); 
+           context.go('/transaction'); 
           },
         ),
       ],
@@ -111,7 +111,7 @@ class CustomDrawer extends StatelessWidget {
                   ),
                   onTap: () {
                     Navigator.pop(context); // Cerrar el drawer
-                    context.go('/budget'); // Navegar a la vista de categorías
+                    context.go('/categories'); // Navegar a la vista de categorías
                   },
                 ),
                 ListTile(
@@ -125,8 +125,8 @@ class CustomDrawer extends StatelessWidget {
                     )
                   ),
                   onTap: () {
-                   // Navigator.pop(context);
-                   // context.go('/spending-trends');
+                   Navigator.pop(context);
+                   context.go('/expense_trends'); // Navegar a la vista de tendencias de gastos
                   },
                 ),
                 ListTile(
