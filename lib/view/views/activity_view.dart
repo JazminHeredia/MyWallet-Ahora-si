@@ -22,26 +22,34 @@ class _TransactionViewState extends State<TransactionView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Agregar Transacción'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            context.go('/home'); // Navega a la pantalla "Home" usando go_router
-          },
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Colors.green, Colors.lightGreen],
         ),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Colors.green, Colors.lightGreen],
+      child: Scaffold(
+        backgroundColor: Colors.transparent, // Ensure transparency for gradient
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: Colors.green[700], // Transparent to show gradient
+          elevation: 0, // Remove shadow for seamless gradient
+          title: const Text('Agregar Transacción'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              context.go('/home'); // Navega a la pantalla "Home" usando go_router
+            },
+          ),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(16),
+            ),
           ),
         ),
-        child: Center(
+        body: Center(
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
