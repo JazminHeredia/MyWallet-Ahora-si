@@ -6,6 +6,7 @@ class CreateCategoryView extends StatefulWidget {
   const CreateCategoryView({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _CreateCategoryViewState createState() => _CreateCategoryViewState();
 }
 
@@ -161,6 +162,7 @@ class _CreateCategoryViewState extends State<CreateCategoryView> {
                                   isExpense = true;
                                 });
                               },
+                              // ignore: deprecated_member_use
                               selectedColor: Colors.red.withOpacity(0.2),
                               labelStyle: TextStyle(
                                 color: isExpense ? Colors.red : Colors.grey[700],
@@ -182,6 +184,7 @@ class _CreateCategoryViewState extends State<CreateCategoryView> {
                                   isExpense = false;
                                 });
                               },
+                              // ignore: deprecated_member_use
                               selectedColor: Colors.green.withOpacity(0.2),
                               labelStyle: TextStyle(
                                 color: !isExpense ? Colors.green : Colors.grey[700],
@@ -238,6 +241,7 @@ class _CreateCategoryViewState extends State<CreateCategoryView> {
                               margin: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
                                 color: isSelected 
+                                    // ignore: deprecated_member_use
                                     ? Theme.of(context).primaryColor.withOpacity(0.2)
                                     : Colors.grey[200],
                                 borderRadius: BorderRadius.circular(10),
@@ -293,10 +297,12 @@ class _CreateCategoryViewState extends State<CreateCategoryView> {
                         spacing: 10,
                         runSpacing: 10,
                         children: availableColors.map((color) {
+                          // ignore: deprecated_member_use
                           bool isSelected = selectedColor == color.value.toRadixString(16);
                           return GestureDetector(
                             onTap: () {
                               setState(() {
+                                // ignore: deprecated_member_use
                                 selectedColor = color.value.toRadixString(16);
                               });
                             },
@@ -313,6 +319,7 @@ class _CreateCategoryViewState extends State<CreateCategoryView> {
                                     : null,
                                 boxShadow: [
                                   BoxShadow(
+                                    // ignore: deprecated_member_use
                                     color: Colors.black.withOpacity(0.1),
                                     blurRadius: 5,
                                     offset: const Offset(0, 2),
@@ -346,6 +353,7 @@ class _CreateCategoryViewState extends State<CreateCategoryView> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     elevation: 3,
+                    // ignore: deprecated_member_use
                     shadowColor: Theme.of(context).primaryColor.withOpacity(0.3),
                   ),
                   child: const Text(

@@ -147,6 +147,8 @@ class CustomDrawer extends StatelessWidget {
               ],
             ),
           ),
+
+          // ignore: avoid_unnecessary_containers
           Container(
             child: Align(
               alignment: FractionalOffset.bottomCenter,

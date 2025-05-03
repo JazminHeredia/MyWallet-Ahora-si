@@ -52,6 +52,7 @@ class TransactionController {
             .collection('transactions')
             .add(newTransaction.toMap());
 
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Transacción guardada con éxito')),
         );
@@ -64,6 +65,7 @@ class TransactionController {
         selectedType = 'Gasto';
         selectedDate = DateTime.now();
       } catch (e) {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error al guardar: $e')),
         );

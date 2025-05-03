@@ -152,11 +152,13 @@ class _BudgetViewState extends State<BudgetView> {
 
                                   // Verificar si se debe generar una alerta
                                   _expenseService.checkBudget(
+                                    // ignore: use_build_context_synchronously
                                     context,
                                     budgetModel.limit, // Simular gasto actual como el límite
                                     budgetModel.category,
                                   );
 
+                                  // ignore: use_build_context_synchronously
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(content: Text('Presupuesto guardado')),
                                   );
@@ -169,6 +171,7 @@ class _BudgetViewState extends State<BudgetView> {
                                   budgetModel.setCategory('');
                                   budgetModel.setLimit(0.0);
                                 } catch (e) {
+                                  // ignore: use_build_context_synchronously
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text('Error al guardar: $e')),
                                   );

@@ -32,6 +32,7 @@ class ExpenseService {
           'createdAt': DateTime.now().toIso8601String(),
         });
       } catch (e) {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error al registrar la alerta: $e')),
         );

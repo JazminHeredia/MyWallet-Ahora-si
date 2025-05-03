@@ -85,6 +85,7 @@ class _HomeViewState extends State<HomeView> {
                     borderRadius: BorderRadius.circular(25),
                     boxShadow: [
                       BoxShadow(
+                        // ignore: deprecated_member_use
                         color: Colors.grey.withOpacity(0.2),
                         spreadRadius: 1,
                         blurRadius: 6,
@@ -197,6 +198,7 @@ class _HomeViewState extends State<HomeView> {
                         borderRadius: BorderRadius.circular(15),
                         boxShadow: [
                           BoxShadow(
+                            // ignore: deprecated_member_use
                             color: Colors.grey.withOpacity(0.2),
                             spreadRadius: 2,
                             blurRadius: 8,
@@ -322,6 +324,7 @@ class _HomeViewState extends State<HomeView> {
                         // ignore: avoid_print
                         print('Transacciones obtenidas: ${transactions.length}');
                         for (var doc in transactions) {
+                          // ignore: avoid_print
                           print('Transacción: ${doc.data()}');
                         }
 
@@ -337,6 +340,7 @@ class _HomeViewState extends State<HomeView> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15),
                               ),
+                              // ignore: deprecated_member_use
                               color: Colors.white.withOpacity(0.9),
                               child: Padding(
                                 padding: const EdgeInsets.all(12),
@@ -346,7 +350,9 @@ class _HomeViewState extends State<HomeView> {
                                       padding: const EdgeInsets.all(10),
                                       decoration: BoxDecoration(
                                         color: selectedType == 'Gasto' 
+                                        // ignore: deprecated_member_use
                                             ? Colors.red.withOpacity(0.2)
+                                            // ignore: deprecated_member_use
                                             : Colors.green.withOpacity(0.2),
                                         borderRadius: BorderRadius.circular(12),
                                       ),
@@ -427,10 +433,12 @@ class _HomeViewState extends State<HomeView> {
                                                     .collection('transactions')
                                                     .doc(transactionId)
                                                     .delete();
+                                                // ignore: use_build_context_synchronously
                                                 ScaffoldMessenger.of(context).showSnackBar(
                                                   const SnackBar(content: Text('Transacción eliminada')),
                                                 );
                                               } catch (e) {
+                                                // ignore: use_build_context_synchronously
                                                 ScaffoldMessenger.of(context).showSnackBar(
                                                   SnackBar(content: Text('Error al eliminar: $e')),
                                                 );

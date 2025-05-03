@@ -36,6 +36,7 @@ class _ExpenseTrendsState extends State<ExpenseTrends> {
         setState(() {
           _isLoading = false;
         });
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error al cargar las tendencias: $e')),
         );
@@ -54,7 +55,7 @@ class _ExpenseTrendsState extends State<ExpenseTrends> {
     }
 
     final total = totalPerCategory.values.fold(0.0, (sum, item) => sum + item);
-
+    // ignore: unused_local_variable
     final random = Random();
     int index = 0;
 
@@ -71,6 +72,8 @@ class _ExpenseTrendsState extends State<ExpenseTrends> {
   }
 
   Widget _buildLegend() {
+    // 
+    // ignore: unused_local_variable
     final random = Random();
     int index = 0;
 
