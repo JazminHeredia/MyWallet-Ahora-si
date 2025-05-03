@@ -32,4 +32,9 @@ final List<RouteBase> routes = [
     name: 'CategoriesView',
     builder: (context, state) => CreateCategoryView(),
   ),
+  GoRoute(
+    path: '/login',
+    name: 'LoginView',
+    builder: (context, state) => LoginScreen(),
+  ),
 ];
