@@ -13,6 +13,17 @@ class _TransactionViewState extends State<TransactionView> {
   final _controller = TransactionController();
 
   @override
+  void initState() {
+    super.initState();
+    _loadCategories(); // Cargar categorías personalizadas al iniciar
+  }
+
+  Future<void> _loadCategories() async {
+    await _controller.loadUserCategories();
+    setState(() {}); // Actualizar la vista con las categorías cargadas
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
@@ -111,7 +122,7 @@ class _TransactionViewState extends State<TransactionView> {
                             suffixIcon: Icon(Icons.category_outlined),
                             contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                           ),
-                          items: _controller.categories
+                          items: _controller.getAllCategories()
                               .map((category) => DropdownMenuItem(
                                     value: category,
                                     child: Text(category),

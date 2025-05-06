@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../model/expense_model.dart';
 
 class ExpenseController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -13,26 +14,14 @@ class ExpenseController {
     Map<String, List<double>> categoryTrends = {};
 
     for (var doc in snapshot.docs) {
-      final data = doc.data();
-      final category = data['category'] ?? 'Sin categoría';
-      final amount = (data['amount'] ?? 0).toDouble();
+      final transaction = TransactionModel.fromMap(doc.id, doc.data());
 
-      // Manejar el campo 'date' como Timestamp o String
-      DateTime date;
-      if (data['date'] is Timestamp) {
-        date = (data['date'] as Timestamp).toDate();
-      } else if (data['date'] is String) {
-        date = DateTime.parse(data['date']);
-      } else {
-        continue; // Ignorar si el formato no es válido
+      final weekOfYear = _getWeekOfYear(transaction.date);
+
+      if (!categoryTrends.containsKey(transaction.category)) {
+        categoryTrends[transaction.category] = List.filled(52, 0.0); // 52 semanas
       }
-
-      final weekOfYear = _getWeekOfYear(date);
-
-      if (!categoryTrends.containsKey(category)) {
-        categoryTrends[category] = List.filled(52, 0.0); // 52 semanas
-      }
-      categoryTrends[category]![weekOfYear - 1] += amount;
+      categoryTrends[transaction.category]![weekOfYear - 1] += transaction.amount;
     }
 
     // Asegúrate de que todas las categorías tengan al menos un valor para mostrar

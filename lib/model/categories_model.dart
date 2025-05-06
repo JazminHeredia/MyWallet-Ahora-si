@@ -1,15 +1,45 @@
-class Category {
-  String name;
-  bool isExpense; // true for "Gastos", false for "Ingresos"
-  String icon; // Icon identifier
-  String color; // Hex color code
-  double? scheduledExpense; // Optional scheduled expense
+import 'package:cloud_firestore/cloud_firestore.dart';
 
+
+// Clase que representa una categoría de transacción (Gastos o Ingresos)
+class Category {
+  final String? id; // ID de la categoria (opcional, se asigna al crear en Firestore)
+  final String name; // Nombre de la categoria
+  final String? description; // Descripción de la categoría
+  final DateTime date; // Fecha de creación de la categoría
+  final bool isExpense; // true para "Gastos" o false para "Ingresos"
+  final String? userId; // User ID asociado con la categoria
+
+  // Constructor de la clase Category
+  // Se utiliza "required" para los campos obligatorios y se asignan valores por defecto para los opcionales
   Category({
-    required this.name,
+    this.id, // campo opcional
+    required this.name, // campo obligatorio
+    this.description,
+    required this.date,
     required this.isExpense,
-    required this.icon,
-    required this.color,
-    this.scheduledExpense,
+    this.userId, 
   });
+
+ // Método para crear una instancia de Category desde un mapa (Firestore)
+  factory Category.fromMap(Map<String, dynamic> data, String? id) {
+    return Category(
+      // Usa ?? para poner valores por defecto si alguna clave no existe.
+      id: id, 
+      name: data['name'] ?? '', 
+      description: data['description'] ?? '',
+      date: (data['date'] as Timestamp).toDate(), 
+      isExpense: data['isExpense'] ?? false,
+      userId: data['userId'] ?? '', 
+    );
+  }
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'description': description,
+      'date': date.toIso8601String(),
+      'isExpense': isExpense,
+      'userId': userId, // Include userId in the map
+    };
+  }
 }

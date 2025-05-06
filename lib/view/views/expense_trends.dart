@@ -106,12 +106,19 @@ class _ExpenseTrendsState extends State<ExpenseTrends> {
       return Scaffold(
         appBar: AppBar(
           centerTitle: true,
+          backgroundColor: Colors.green[700],
+          elevation: 0,
           title: const Text('Tendencias de Gastos'),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
               context.go('/home');
             },
+          ),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(16),
+            ),
           ),
         ),
         body: const Center(
@@ -122,15 +129,22 @@ class _ExpenseTrendsState extends State<ExpenseTrends> {
 
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Tendencia de Gastos'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            context.go('/home');
-          },
+          centerTitle: true,
+          backgroundColor: Colors.green[700],
+          elevation: 0,
+          title: const Text('Tendencias de Gastos'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              context.go('/home');
+            },
+          ),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(16),
+            ),
+          ),
         ),
-      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

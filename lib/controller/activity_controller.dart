@@ -11,6 +11,7 @@ class TransactionController {
   DateTime selectedDate = DateTime.now();
   String selectedType = 'Gasto';
   final List<String> categories = ['Alimentos', 'Transporte', 'Entretenimiento', 'Salud'];
+  List<String> userCategories = []; // Lista para categorías personalizadas
   String? selectedCategory;
 
   GlobalKey<FormState> get formKey => _formKey;
@@ -71,5 +72,29 @@ class TransactionController {
         );
       }
     }
+  }
+
+  // Método para cargar categorías personalizadas del usuario
+  Future<void> loadUserCategories() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('categories')
+          .where('userId', isEqualTo: user.uid)
+          .get();
+
+      userCategories = querySnapshot.docs
+          .map((doc) => doc['name'] as String)
+          .toList();
+    } catch (e) {
+      debugPrint('Error al cargar categorías personalizadas: $e');
+    }
+  }
+
+  // Método para obtener todas las categorías (predeterminadas + personalizadas)
+  List<String> getAllCategories() {
+    return [...categories, ...userCategories];
   }
 }
