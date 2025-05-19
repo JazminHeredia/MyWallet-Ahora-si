@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:my_wallet/config/theme/app_theme.dart'; // Asegúrate de tener el ThemeProvider
+import 'package:my_wallet/providers/theme_provider.dart'; // Importa el ThemeProvider correcto
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});

@@ -4,8 +4,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:my_wallet/service/provider/auth_provider.dart'; 
 import 'package:provider/provider.dart'; 
 import 'package:my_wallet/config/router/app_router.dart'; 
-import 'package:my_wallet/config/theme/app_theme.dart'; 
 import 'package:my_wallet/model/budget_model.dart';
+import 'package:my_wallet/providers/theme_provider.dart';
 
 // Función principal que se ejecuta al iniciar la aplicación
 void main() async {
@@ -26,12 +26,19 @@ class MainApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()), // Se crea e inyecta el AuthProvider que gestiona la autenticación.
         ChangeNotifierProvider(create: (_) => BudgetModel()), // Se crea e inyecta el BudgetModel que gestiona el presupuesto.
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false, // Elimina la etiqueta de "debug" en la interfaz.
-        title: 'My Wallet', // Título de la aplicación.
-        theme: appTheme, // Aplica un tema personalizado definido en 'app_theme.dart'.
-        routerConfig: appRouter, // Usa configuración de rutas personalizadas definida en 'app_router.dart'.
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, child) {
+          return MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            title: 'My Wallet',
+            theme: themeProvider.themeData,
+            darkTheme: themeProvider.themeData,
+            themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            routerConfig: appRouter,
+          );
+        },
       ),
     );
   }

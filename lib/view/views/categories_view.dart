@@ -15,18 +15,18 @@ class _CreateCategoryViewState extends State<CreateCategoryView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Colors.green, Colors.lightGreen],
+          colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.primary.withOpacity(0.7)],
         ),
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           centerTitle: true,
-          backgroundColor: Colors.green[700],
+          backgroundColor: Theme.of(context).colorScheme.primary,
           elevation: 0,
           title: const Text('Agregar Categoría'),
           leading: IconButton(
@@ -103,8 +103,8 @@ class _CreateCategoryViewState extends State<CreateCategoryView> {
                         const SizedBox(height: 30),
                         ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green[700],
-                            foregroundColor: Colors.white,
+                            backgroundColor: Theme.of(context).colorScheme.primary,
+                            foregroundColor: Theme.of(context).colorScheme.onPrimary,
                             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),

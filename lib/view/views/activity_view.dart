@@ -26,20 +26,20 @@ class _TransactionViewState extends State<TransactionView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Colors.green, Colors.lightGreen],
+          colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.primary.withOpacity(0.7)],
         ),
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           centerTitle: true,
-          backgroundColor: Colors.green[700],
+          backgroundColor: Theme.of(context).colorScheme.primary,
           elevation: 0,
-          title: const Text('Agregar Transacción'),
+          title: Text('Agregar Transacción', style: TextStyle(color: Theme.of(context).appBarTheme.foregroundColor)),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
@@ -69,63 +69,60 @@ class _TransactionViewState extends State<TransactionView> {
                       children: [
                         TextFormField(
                           controller: _controller.nameController,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             labelText: 'Nombre',
+                            labelStyle: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
                             filled: true,
-                            fillColor: Colors.white,
-                            suffixIcon: Icon(Icons.person),
-                            contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                            fillColor: Theme.of(context).cardColor,
+                            suffixIcon: const Icon(Icons.person),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                           ),
+                          style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
                           validator: (value) =>
                               value!.isEmpty ? 'Por favor ingresa un nombre' : null,
                         ),
                         const SizedBox(height: 12),
                         TextFormField(
                           controller: _controller.descriptionController,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             labelText: 'Descripción',
+                            labelStyle: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
                             filled: true,
-                            fillColor: Colors.white,
-                            suffixIcon: Icon(Icons.description),
-                            contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                            fillColor: Theme.of(context).cardColor,
+                            suffixIcon: const Icon(Icons.description),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                           ),
+                          style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
                         ),
                         const SizedBox(height: 12),
                         TextFormField(
                           controller: _controller.amountController,
                           keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             labelText: 'Monto',
+                            labelStyle: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
                             filled: true,
-                            fillColor: Colors.white,
-                            suffixIcon: Icon(Icons.money),
-                            contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                            fillColor: Theme.of(context).cardColor,
+                            suffixIcon: const Icon(Icons.attach_money),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Por favor ingresa un monto';
-                            }
-                            final parsed = double.tryParse(value.trim());
-                            if (parsed == null || parsed <= 0) {
-                              return 'Ingresa un monto válido mayor a 0';
-                            }
-                            return null;
-                          },
+                          style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
                         ),
                         const SizedBox(height: 12),
                         DropdownButtonFormField<String>(
                           value: _controller.selectedCategory,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             labelText: 'Categoría',
+                            labelStyle: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
                             filled: true,
-                            fillColor: Colors.white,
-                            suffixIcon: Icon(Icons.category_outlined),
-                            contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                            fillColor: Theme.of(context).cardColor,
+                            suffixIcon: const Icon(Icons.category_outlined),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                           ),
                           items: _controller.getAllCategories()
                               .map((category) => DropdownMenuItem(
                                     value: category,
-                                    child: Text(category),
+                                    child: Text(category, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color)),
                                   ))
                               .toList(),
                           onChanged: (value) {
@@ -139,17 +136,18 @@ class _TransactionViewState extends State<TransactionView> {
                         const SizedBox(height: 12),
                         DropdownButtonFormField<String>(
                           value: _controller.selectedType,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             labelText: 'Tipo',
+                            labelStyle: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
                             filled: true,
-                            fillColor: Colors.white,
-                            suffixIcon: Icon(Icons.category),
-                            contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                            fillColor: Theme.of(context).cardColor,
+                            suffixIcon: const Icon(Icons.category),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                           ),
                           items: ['Gasto', 'Ingreso']
                               .map((type) => DropdownMenuItem(
                                     value: type,
-                                    child: Text(type),
+                                    child: Text(type, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color)),
                                   ))
                               .toList(),
                           onChanged: (value) {
@@ -165,18 +163,20 @@ class _TransactionViewState extends State<TransactionView> {
                             setState(() {}); // Actualizar la vista al cambiar la fecha
                           },
                           child: InputDecorator(
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               labelText: 'Fecha',
+                              labelStyle: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
                               filled: true,
-                              fillColor: Colors.white,
-                              suffixIcon: Icon(Icons.calendar_today),
-                              contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                              fillColor: Theme.of(context).cardColor,
+                              suffixIcon: const Icon(Icons.calendar_today),
+                              contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   '${_controller.selectedDate.day}/${_controller.selectedDate.month}/${_controller.selectedDate.year}',
+                                  style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),
                                 ),
                               ],
                             ),
@@ -185,8 +185,8 @@ class _TransactionViewState extends State<TransactionView> {
                         const SizedBox(height: 20),
                         ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green[700],
-                            foregroundColor: Colors.white,
+                            backgroundColor: Theme.of(context).colorScheme.primary,
+                            foregroundColor: Theme.of(context).colorScheme.onPrimary,
                             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -194,7 +194,7 @@ class _TransactionViewState extends State<TransactionView> {
                           ),
                           onPressed: () => _controller.saveTransaction(context),
                           icon: const Icon(Icons.save),
-                          label: const Text('Guardar'),
+                          label: Text('Guardar', style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color)),
                         ),
                       ],
                     ),

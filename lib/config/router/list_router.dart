@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:my_wallet/view/views_list.dart';
+import 'package:my_wallet/view/views/personalize_view.dart';
 
 final List<RouteBase> routes = [
   GoRoute(
@@ -36,5 +37,10 @@ final List<RouteBase> routes = [
     path: '/login',
     name: 'LoginView',
     builder: (context, state) => LoginScreen(),
+  ),
+  GoRoute(
+    path: '/personalize',
+    name: 'PersonalizeView',
+    builder: (context, state) => const PersonalizeView(),
   ),
 ];

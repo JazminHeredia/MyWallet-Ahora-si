@@ -3,15 +3,34 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:my_wallet/service/provider/auth_provider.dart';
+import 'package:my_wallet/providers/theme_provider.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return AppBar(
-      backgroundColor: Colors.green,
-      title: const Text('My Wallet'),
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      title: Row(
+        children: [
+          const Text('My Wallet'),
+          const SizedBox(width: 8),
+          IconButton(
+            icon: Icon(
+              themeProvider.isDarkMode
+                  ? Icons.wb_sunny // sunny icon
+                  : Icons.dark_mode, // moon icon
+              color: Colors.white,
+            ),
+            onPressed: () {
+              themeProvider.toggleTheme();
+            },
+            tooltip: themeProvider.isDarkMode ? 'Modo claro' : 'Modo oscuro',
+          ),
+        ],
+      ),
       actions: [
         IconButton(
           icon: const Icon(Icons.add),
@@ -42,7 +61,7 @@ class CustomDrawer extends StatelessWidget {
               children: [
                 Container(
                   padding: const EdgeInsets.all(16),
-                  decoration: const BoxDecoration(color: Colors.green),
+                  decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary),
                   height: 110,
                   child: Row(
                     children: [
@@ -53,7 +72,7 @@ class CustomDrawer extends StatelessWidget {
                           ? NetworkImage(user!.photoURL!) 
                           : null,
                         child: user?.photoURL == null 
-                          ? const Icon(Icons.person, size: 40, color: Colors.green)
+                          ? Icon(Icons.person, size: 40, color: Theme.of(context).colorScheme.primary)
                           : null,
                       ),
                       const SizedBox(width: 9),
@@ -85,9 +104,7 @@ class CustomDrawer extends StatelessWidget {
                   ),
                 ),
                 ListTile(
-                  leading: const Icon(Icons.home, 
-                    color: Colors.green,
-                  ),
+                  leading: Icon(Icons.home, color: Theme.of(context).colorScheme.primary),
                   title: const Text('Inicio', 
                     style: TextStyle(
                       fontSize: 16,
@@ -100,9 +117,7 @@ class CustomDrawer extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                  leading: const Icon(Icons.category, 
-                    color: Colors.green,
-                  ),
+                  leading: Icon(Icons.category, color: Theme.of(context).colorScheme.primary),
                   title: const Text('Categorías', 
                     style: TextStyle(
                       fontSize: 16,
@@ -115,9 +130,7 @@ class CustomDrawer extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                  leading: const Icon(Icons.trending_up, 
-                    color: Colors.green,
-                  ),
+                  leading: Icon(Icons.trending_up, color: Theme.of(context).colorScheme.primary),
                   title: const Text('Tendencia de gastos', 
                     style: TextStyle(
                       fontSize: 16,
@@ -130,9 +143,7 @@ class CustomDrawer extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                  leading: const Icon(Icons.notifications, 
-                    color: Colors.green,
-                  ),
+                  leading: Icon(Icons.notifications, color: Theme.of(context).colorScheme.primary),
                   title: const Text('Alertas', 
                     style: TextStyle(
                       fontSize: 16,
@@ -142,6 +153,18 @@ class CustomDrawer extends StatelessWidget {
                   onTap: () {
                     Navigator.pop(context);
                     context.go('/budget'); // Navegar a la vista de alertas
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.settings, color: Theme.of(context).colorScheme.primary),
+                  title: const Text('Personalizar',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      )),
+                  onTap: () {
+                    Navigator.pop(context); // Cerrar el drawer
+                    context.go('/personalize'); // Navegar a la vista de personalización
                   },
                 ),
               ],
@@ -159,7 +182,7 @@ class CustomDrawer extends StatelessWidget {
                   )
                 ),
                 child: ListTile(
-                  leading: const Icon(Icons.exit_to_app, color: Color.fromARGB(255, 0, 0, 0)),
+                  leading: Icon(Icons.exit_to_app, color: Theme.of(context).colorScheme.primary),
                   title: const Text('Cerrar sesión', 
                     style: TextStyle(color: Color.fromARGB(255, 4, 121, 22))
                   ),

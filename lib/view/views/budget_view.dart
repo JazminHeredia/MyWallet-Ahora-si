@@ -25,11 +25,11 @@ class _BudgetViewState extends State<BudgetView> {
     final budgetModel = Provider.of<BudgetModel>(context, listen: false);
 
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Colors.green, Colors.lightGreen], // Gradient for entire screen
+          colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.primary.withOpacity(0.7)], // Gradient for entire screen
         ),
       ),
       child: Scaffold(
@@ -37,15 +37,15 @@ class _BudgetViewState extends State<BudgetView> {
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight),
           child: Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Colors.green, Colors.lightGreen], // Gradient for AppBar
+                colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.primary.withOpacity(0.7)], // Gradient for AppBar
               ),
             ),
             child: AppBar(
-              backgroundColor: Colors.green[700], // Transparent AppBar
+              backgroundColor: Theme.of(context).colorScheme.primary, // Transparent AppBar
               centerTitle: true,
               title: const Text('Presupuestos por Categoría'),
               leading: IconButton(
@@ -83,12 +83,12 @@ class _BudgetViewState extends State<BudgetView> {
                           children: [
                             DropdownButtonFormField<String>(
                               value: _selectedCategory,
-                              decoration: const InputDecoration(
+                              decoration: InputDecoration(
                                 labelText: 'Categoría',
                                 filled: true,
-                                fillColor: Colors.white,
-                                suffixIcon: Icon(Icons.category_outlined),
-                                contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                                fillColor: Theme.of(context).cardColor,
+                                suffixIcon: const Icon(Icons.category_outlined),
+                                contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                               ),
                               items: _categories
                                   .map((category) => DropdownMenuItem(

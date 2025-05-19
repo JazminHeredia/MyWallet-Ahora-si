@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 //import 'package:my_wallet/model/home_model.dart'; // Importa el modelo
 import 'package:my_wallet/view/views/widgets/custom_appbar.dart';
 
@@ -56,6 +57,19 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
+  Future<void> _deleteTransaction(String transactionId) async {
+    await FirebaseFirestore.instance
+        .collection('transactions')
+        .doc(transactionId)
+        .delete();
+    // Puedes mostrar un SnackBar si quieres feedback visual
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Transacción eliminada')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
@@ -81,11 +95,10 @@ class _HomeViewState extends State<HomeView> {
                 Container(
                   margin: const EdgeInsets.only(bottom: 16),
                   decoration: BoxDecoration(
-                    color: Colors.grey[100],
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     borderRadius: BorderRadius.circular(25),
                     boxShadow: [
                       BoxShadow(
-                        // ignore: deprecated_member_use
                         color: Colors.grey.withOpacity(0.2),
                         spreadRadius: 1,
                         blurRadius: 6,
@@ -95,9 +108,15 @@ class _HomeViewState extends State<HomeView> {
                   ),
                   child: TextField(
                     controller: _searchController,
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                    ),
                     decoration: InputDecoration(
                       hintText: 'Buscar transacciones...',
-                      prefixIcon: const Icon(Icons.search, color: Colors.green),
+                      hintStyle: TextStyle(
+                        color: Theme.of(context).hintColor,
+                      ),
+                      prefixIcon: Icon(Icons.search, color: Theme.of(context).colorScheme.primary),
                       suffixIcon: _searchQuery.isNotEmpty
                           ? IconButton(
                               icon: const Icon(Icons.clear, color: Colors.grey),
@@ -132,7 +151,7 @@ class _HomeViewState extends State<HomeView> {
                       child: Text(
                         'Día',
                         style: TextStyle(
-                          color: selectedPeriod == 'Día' ? Colors.green : Colors.grey,
+                          color: selectedPeriod == 'Día' ? Theme.of(context).colorScheme.primary : Colors.grey,
                           fontWeight: selectedPeriod == 'Día' ? FontWeight.bold : FontWeight.normal,
                         ),
                       ),
@@ -146,7 +165,7 @@ class _HomeViewState extends State<HomeView> {
                       child: Text(
                         'Semana',
                         style: TextStyle(
-                          color: selectedPeriod == 'Semana' ? Colors.green : Colors.grey,
+                          color: selectedPeriod == 'Semana' ? Theme.of(context).colorScheme.primary : Colors.grey,
                           fontWeight: selectedPeriod == 'Semana' ? FontWeight.bold : FontWeight.normal,
                         ),
                       ),
@@ -160,7 +179,7 @@ class _HomeViewState extends State<HomeView> {
                       child: Text(
                         'Mes',
                         style: TextStyle(
-                          color: selectedPeriod == 'Mes' ? Colors.green : Colors.grey,
+                          color: selectedPeriod == 'Mes' ? Theme.of(context).colorScheme.primary : Colors.grey,
                           fontWeight: selectedPeriod == 'Mes' ? FontWeight.bold : FontWeight.normal,
                         ),
                       ),
@@ -174,7 +193,7 @@ class _HomeViewState extends State<HomeView> {
                       child: Text(
                         'Año',
                         style: TextStyle(
-                          color: selectedPeriod == 'Año' ? Colors.green : Colors.grey,
+                          color: selectedPeriod == 'Año' ? Theme.of(context).colorScheme.primary : Colors.grey,
                           fontWeight: selectedPeriod == 'Año' ? FontWeight.bold : FontWeight.normal,
                         ),
                       ),
@@ -194,11 +213,10 @@ class _HomeViewState extends State<HomeView> {
                     return Container(
                       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Theme.of(context).cardColor,
                         borderRadius: BorderRadius.circular(15),
                         boxShadow: [
                           BoxShadow(
-                            // ignore: deprecated_member_use
                             color: Colors.grey.withOpacity(0.2),
                             spreadRadius: 2,
                             blurRadius: 8,
@@ -213,16 +231,16 @@ class _HomeViewState extends State<HomeView> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Colors.grey,
+                              // color: Colors.grey,
                             ),
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            '\$${balance.toStringAsFixed(2)}',
+                             '\$${balance.toStringAsFixed(2)}',
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: balance >= 0 ? Colors.green : Colors.red,
+                              color: balance >= 0 ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.error,
                             ),
                           ),
                         ],
@@ -333,15 +351,13 @@ class _HomeViewState extends State<HomeView> {
                           itemCount: filteredTransactions.length,
                           itemBuilder: (context, index) {
                             final transaction = filteredTransactions[index].data() as Map<String, dynamic>;
-                            final transactionId = filteredTransactions[index].id;
                             return Card(
                               elevation: 4,
                               margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15),
                               ),
-                              // ignore: deprecated_member_use
-                              color: Colors.white.withOpacity(0.9),
+                              color: Theme.of(context).cardColor,
                               child: Padding(
                                 padding: const EdgeInsets.all(12),
                                 child: Row(
@@ -350,15 +366,13 @@ class _HomeViewState extends State<HomeView> {
                                       padding: const EdgeInsets.all(10),
                                       decoration: BoxDecoration(
                                         color: selectedType == 'Gasto' 
-                                        // ignore: deprecated_member_use
-                                            ? Colors.red.withOpacity(0.2)
-                                            // ignore: deprecated_member_use
-                                            : Colors.green.withOpacity(0.2),
+                                            ? Theme.of(context).colorScheme.error.withOpacity(0.2)
+                                            : Theme.of(context).colorScheme.primary.withOpacity(0.2),
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       child: Icon(
                                         selectedType == 'Gasto' ? Icons.remove : Icons.add,
-                                        color: selectedType == 'Gasto' ? Colors.red : Colors.green,
+                                        color: selectedType == 'Gasto' ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.primary,
                                       ),
                                     ),
                                     const SizedBox(width: 16),
@@ -368,26 +382,31 @@ class _HomeViewState extends State<HomeView> {
                                         children: [
                                           Text(
                                             transaction['name'] ?? '',
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 16,
-                                              color: Colors.black87,
+                                              color: Theme.of(context).textTheme.bodyLarge?.color,
                                             ),
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
                                             transaction['description'] ?? '',
-                                            style: const TextStyle(
-                                              color: Colors.black54,
+                                            style: TextStyle(
                                               fontSize: 14,
+                                              color: Theme.of(context).brightness == Brightness.dark
+                                                  ? Colors.white70
+                                                  : Colors.black54,
                                             ),
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
-                                            transaction['date']?.toString() ?? 'Sin fecha',
-                                            style: const TextStyle(
-                                              color: Colors.black45,
-                                              fontSize: 12,
+                                            'Monto: ${transaction['amount'] != null ? transaction['amount'].toString() : ''}',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(context).brightness == Brightness.dark
+                                                  ? Colors.white
+                                                  : Theme.of(context).colorScheme.primary,
                                             ),
                                           ),
                                         ],
@@ -397,54 +416,19 @@ class _HomeViewState extends State<HomeView> {
                                       crossAxisAlignment: CrossAxisAlignment.end,
                                       children: [
                                         Text(
-                                          '${transaction['amount'] ?? 0} \$',
+                                          (transaction['timestamp'] != null && transaction['timestamp'] is Timestamp)
+                                              ? (transaction['timestamp'] as Timestamp).toDate().toLocal().toString().substring(0, 16)
+                                              : '',
                                           style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                            color: selectedType == 'Gasto' ? Colors.red : Colors.green,
+                                            fontSize: 12,
+                                            color: Theme.of(context).brightness == Brightness.dark
+                                                ? Colors.white70
+                                                : Colors.black54,
                                           ),
                                         ),
                                         IconButton(
-                                          icon: const Icon(Icons.delete, color: Colors.black45),
-                                          onPressed: () async {
-                                            final confirm = await showDialog<bool>(
-                                              context: context,
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                  title: const Text('Confirmar eliminación'),
-                                                  content: const Text('¿Estás seguro de que deseas eliminar esta transacción?'),
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () => Navigator.of(context).pop(false),
-                                                      child: const Text('Cancelar'),
-                                                    ),
-                                                    TextButton(
-                                                      onPressed: () => Navigator.of(context).pop(true),
-                                                      child: const Text('Eliminar'),
-                                                    ),
-                                                  ],
-                                                );
-                                              },
-                                            );
-
-                                            if (confirm == true) {
-                                              try {
-                                                await FirebaseFirestore.instance
-                                                    .collection('transactions')
-                                                    .doc(transactionId)
-                                                    .delete();
-                                                // ignore: use_build_context_synchronously
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                  const SnackBar(content: Text('Transacción eliminada')),
-                                                );
-                                              } catch (e) {
-                                                // ignore: use_build_context_synchronously
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                  SnackBar(content: Text('Error al eliminar: $e')),
-                                                );
-                                              }
-                                            }
-                                          },
+                                          icon: Icon(Icons.delete, color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.error),
+                                          onPressed: () => _deleteTransaction(filteredTransactions[index].id),
                                         ),
                                       ],
                                     ),

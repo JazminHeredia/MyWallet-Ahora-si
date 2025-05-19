@@ -106,7 +106,7 @@ class _ExpenseTrendsState extends State<ExpenseTrends> {
       return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          backgroundColor: Colors.green[700],
+          backgroundColor: Theme.of(context).colorScheme.primary,
           elevation: 0,
           title: const Text('Tendencias de Gastos'),
           leading: IconButton(
@@ -130,7 +130,7 @@ class _ExpenseTrendsState extends State<ExpenseTrends> {
     return Scaffold(
       appBar: AppBar(
           centerTitle: true,
-          backgroundColor: Colors.green[700],
+          backgroundColor: Theme.of(context).colorScheme.primary,
           elevation: 0,
           title: const Text('Tendencias de Gastos'),
           leading: IconButton(
