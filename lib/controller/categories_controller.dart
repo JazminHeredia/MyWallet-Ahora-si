@@ -71,4 +71,51 @@ class CategoriesController {
       throw Exception('Error al agregar la categoría: $e');
     }
   }
+
+  // Obtener todas las categorías del usuario actual
+  Stream<List<my_wallet.Category>> getUserCategoriesStream() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return const Stream.empty();
+    return FirebaseFirestore.instance
+        .collection('categories')
+        .where('userId', isEqualTo: user.uid)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => my_wallet.Category.fromMap(doc.data(), doc.id))
+            .toList());
+  }
+
+  // Actualizar una categoría existente
+  Future<void> updateCategory(String categoryId, my_wallet.Category updatedCategory, BuildContext context) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('categories')
+          .doc(categoryId)
+          .update(updatedCategory.toMap());
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Categoría actualizada con éxito')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al actualizar la categoría: $e')),
+      );
+    }
+  }
+
+  // Eliminar una categoría
+  Future<void> deleteCategory(String categoryId, BuildContext context) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('categories')
+          .doc(categoryId)
+          .delete();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Categoría eliminada con éxito')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al eliminar la categoría: $e')),
+      );
+    }
+  }
 }

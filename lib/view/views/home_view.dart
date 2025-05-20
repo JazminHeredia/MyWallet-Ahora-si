@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 //import 'package:my_wallet/model/home_model.dart'; // Importa el modelo
 import 'package:my_wallet/view/views/widgets/custom_appbar.dart';
+import 'package:my_wallet/controller/expense_controller.dart';
+import 'package:my_wallet/controller/activity_controller.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -18,6 +20,9 @@ class _HomeViewState extends State<HomeView> {
   String selectedType = 'Gasto';
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+  final ExpenseController _expenseController = ExpenseController();
+  final TransactionController _transactionController = TransactionController();
+  List<String> _allCategories = [];
 
   @override
   void dispose() {
@@ -68,6 +73,19 @@ class _HomeViewState extends State<HomeView> {
         const SnackBar(content: Text('Transacción eliminada')),
       );
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCategories();
+  }
+
+  Future<void> _loadCategories() async {
+    await _transactionController.loadUserCategories();
+    setState(() {
+      _allCategories = _transactionController.getAllCategories();
+    });
   }
 
   @override
@@ -265,7 +283,7 @@ class _HomeViewState extends State<HomeView> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.green[700],
+                color: Theme.of(context).colorScheme.primary,
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
               ),
               child: Column(
@@ -284,7 +302,7 @@ class _HomeViewState extends State<HomeView> {
                           child: Text(
                             'GASTOS',
                             style: TextStyle(
-                              color: selectedType == 'Gasto' ? Colors.white : Colors.white70,
+                              color: selectedType == 'Gasto' ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onPrimary.withOpacity(0.7),
                               fontWeight: selectedType == 'Gasto' ? FontWeight.bold : FontWeight.normal,
                             ),
                           ),
@@ -298,7 +316,7 @@ class _HomeViewState extends State<HomeView> {
                           child: Text(
                             'INGRESOS',
                             style: TextStyle(
-                              color: selectedType == 'Ingreso' ? Colors.white : Colors.white70,
+                              color: selectedType == 'Ingreso' ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onPrimary.withOpacity(0.7),
                               fontWeight: selectedType == 'Ingreso' ? FontWeight.bold : FontWeight.normal,
                             ),
                           ),
@@ -416,9 +434,21 @@ class _HomeViewState extends State<HomeView> {
                                       crossAxisAlignment: CrossAxisAlignment.end,
                                       children: [
                                         Text(
-                                          (transaction['timestamp'] != null && transaction['timestamp'] is Timestamp)
-                                              ? (transaction['timestamp'] as Timestamp).toDate().toLocal().toString().substring(0, 16)
-                                              : '',
+                                          (() {
+                                            final ts = transaction['date'] ?? transaction['timestamp'];
+                                            if (ts is Timestamp) {
+                                              final d = ts.toDate();
+                                              return '${d.day}/${d.month}/${d.year}';
+                                            } else if (ts is String) {
+                                              final d = DateTime.tryParse(ts);
+                                              if (d != null) {
+                                                return '${d.day}/${d.month}/${d.year}';
+                                              }
+                                            } else if (ts is DateTime) {
+                                              return '${ts.day}/${ts.month}/${ts.year}';
+                                            }
+                                            return '';
+                                          })(),
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: Theme.of(context).brightness == Brightness.dark
@@ -426,9 +456,30 @@ class _HomeViewState extends State<HomeView> {
                                                 : Colors.black54,
                                           ),
                                         ),
-                                        IconButton(
-                                          icon: Icon(Icons.delete, color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.error),
-                                          onPressed: () => _deleteTransaction(filteredTransactions[index].id),
+                                        Row(
+                                          children: [
+                                            IconButton(
+                                              icon: Icon(Icons.delete, color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.error),
+                                              onPressed: () => _deleteTransaction(filteredTransactions[index].id),
+                                            ),
+                                            IconButton(
+                                              icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.primary),
+                                              onPressed: () async {
+                                                await showDialog(
+                                                  context: context,
+                                                  builder: (context) => EditTransactionDialog(
+                                                    transaction: transaction,
+                                                    transactionId: filteredTransactions[index].id,
+                                                    categories: _allCategories,
+                                                    onUpdate: (id, data, ctx) async {
+                                                      await _expenseController.updateTransaction(id, data, ctx);
+                                                      setState(() {});
+                                                    },
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
@@ -447,6 +498,153 @@ class _HomeViewState extends State<HomeView> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class EditTransactionDialog extends StatefulWidget {
+  final Map<String, dynamic> transaction;
+  final String transactionId;
+  final List<String> categories;
+  final void Function(String, Map<String, dynamic>, BuildContext) onUpdate;
+
+  const EditTransactionDialog({
+    super.key,
+    required this.transaction,
+    required this.transactionId,
+    required this.categories,
+    required this.onUpdate,
+  });
+
+  @override
+  State<EditTransactionDialog> createState() => _EditTransactionDialogState();
+}
+
+class _EditTransactionDialogState extends State<EditTransactionDialog> {
+  late TextEditingController nameController;
+  late TextEditingController descriptionController;
+  late TextEditingController amountController;
+  late String selectedCategory;
+  late String selectedType;
+  late DateTime selectedDate;
+
+  @override
+  void initState() {
+    super.initState();
+    nameController = TextEditingController(text: widget.transaction['name'] ?? '');
+    descriptionController = TextEditingController(text: widget.transaction['description'] ?? '');
+    amountController = TextEditingController(text: widget.transaction['amount']?.toString() ?? '');
+    selectedCategory = widget.transaction['category'] ?? (widget.categories.isNotEmpty ? widget.categories.first : '');
+    selectedType = widget.transaction['type'] ?? 'Gasto';
+    final ts = widget.transaction['date'] ?? widget.transaction['timestamp'];
+    if (ts is Timestamp) {
+      selectedDate = ts.toDate();
+    } else if (ts is String) {
+      selectedDate = DateTime.tryParse(ts) ?? DateTime.now();
+    } else if (ts is DateTime) {
+      selectedDate = ts;
+    } else {
+      selectedDate = DateTime.now();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Editar Transacción'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              controller: nameController,
+              decoration: const InputDecoration(labelText: 'Nombre'),
+            ),
+            TextFormField(
+              controller: descriptionController,
+              decoration: const InputDecoration(labelText: 'Descripción'),
+            ),
+            TextFormField(
+              controller: amountController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'Monto'),
+            ),
+            DropdownButtonFormField<String>(
+              value: selectedCategory,
+              items: widget.categories.map((cat) => DropdownMenuItem(
+                value: cat,
+                child: Text(cat),
+              )).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedCategory = value!;
+                });
+              },
+              decoration: const InputDecoration(labelText: 'Categoría'),
+            ),
+            DropdownButtonFormField<String>(
+              value: selectedType,
+              items: ['Gasto', 'Ingreso'].map((type) => DropdownMenuItem(
+                value: type,
+                child: Text(type),
+              )).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedType = value!;
+                });
+              },
+              decoration: const InputDecoration(labelText: 'Tipo'),
+            ),
+            const SizedBox(height: 8),
+            InkWell(
+              onTap: () async {
+                final picked = await showDatePicker(
+                  context: context,
+                  initialDate: selectedDate,
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2100),
+                );
+                if (picked != null) {
+                  setState(() {
+                    selectedDate = picked;
+                  });
+                }
+              },
+              child: InputDecorator(
+                decoration: const InputDecoration(labelText: 'Fecha'),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('${selectedDate.day}/${selectedDate.month}/${selectedDate.year}'),
+                    const Icon(Icons.calendar_today, size: 18),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancelar'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            final updatedData = {
+              'name': nameController.text.trim(),
+              'description': descriptionController.text.trim(),
+              'amount': double.tryParse(amountController.text.trim()) ?? 0.0,
+              'category': selectedCategory,
+              'type': selectedType,
+              'date': selectedDate,
+            };
+            widget.onUpdate(widget.transactionId, updatedData, context);
+            Navigator.of(context).pop();
+          },
+          child: const Text('Actualizar'),
+        ),
+      ],
     );
   }
 }

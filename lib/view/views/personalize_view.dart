@@ -10,6 +10,11 @@ class PersonalizeView extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final colorOptions = [
+      {'name': 'Verde', 'color': const Color(0xFF388E3C)}, // Verde default
+      {'name': 'Rosa', 'color': Colors.pink},
+      {'name': 'Gris', 'color': Colors.grey},
+      {'name': 'Morado', 'color': Colors.purple},
+      {'name': 'Aqua', 'color': Colors.cyan},
       {'name': 'Rojo', 'color': Colors.red},
       {'name': 'Azul', 'color': Colors.blue},
       {'name': 'Amarillo', 'color': Colors.yellow[700]},

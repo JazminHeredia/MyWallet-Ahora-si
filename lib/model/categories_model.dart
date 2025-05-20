@@ -23,14 +23,21 @@ class Category {
 
  // Método para crear una instancia de Category desde un mapa (Firestore)
   factory Category.fromMap(Map<String, dynamic> data, String? id) {
+    DateTime parsedDate;
+    if (data['date'] is Timestamp) {
+      parsedDate = (data['date'] as Timestamp).toDate();
+    } else if (data['date'] is String) {
+      parsedDate = DateTime.parse(data['date']);
+    } else {
+      parsedDate = DateTime.now();
+    }
     return Category(
-      // Usa ?? para poner valores por defecto si alguna clave no existe.
-      id: id, 
-      name: data['name'] ?? '', 
+      id: id,
+      name: data['name'] ?? '',
       description: data['description'] ?? '',
-      date: (data['date'] as Timestamp).toDate(), 
+      date: parsedDate,
       isExpense: data['isExpense'] ?? false,
-      userId: data['userId'] ?? '', 
+      userId: data['userId'] ?? '',
     );
   }
   Map<String, dynamic> toMap() {
