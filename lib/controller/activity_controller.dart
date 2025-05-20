@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_wallet/model/activity_model.dart' as my_wallet;
+import 'package:my_wallet/controller/budget_controller.dart';
 
 class TransactionController {
   final _formKey = GlobalKey<FormState>();
@@ -52,6 +53,16 @@ class TransactionController {
         await FirebaseFirestore.instance
             .collection('transactions')
             .add(newTransaction.toMap());
+
+        // ALERTA DE PRESUPUESTO SOLO PARA GASTOS (después de guardar)
+        if (selectedType == 'Gasto' && selectedCategory != null) {
+          final budgetController = BudgetController();
+          await budgetController.checkAndAlertBudget(
+            context,
+            selectedCategory!,
+            double.parse(amountController.text.trim()),
+          );
+        }
 
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(

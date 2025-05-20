@@ -17,3 +17,38 @@ class BudgetModel with ChangeNotifier {
     notifyListeners();
   }
 }
+
+class BudgetAlert {
+  final String id;
+  final String category;
+  final double limit;
+  final String userId;
+  final String? alert;
+
+  BudgetAlert({
+    required this.id,
+    required this.category,
+    required this.limit,
+    required this.userId,
+    this.alert,
+  });
+
+  factory BudgetAlert.fromMap(Map<String, dynamic> data, String id) {
+    return BudgetAlert(
+      id: id,
+      category: data['category'] ?? '',
+      limit: (data['limit'] ?? 0).toDouble(),
+      userId: data['userId'] ?? '',
+      alert: data['alert'],
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'category': category,
+      'limit': limit,
+      'userId': userId,
+      if (alert != null) 'alert': alert,
+    };
+  }
+}
