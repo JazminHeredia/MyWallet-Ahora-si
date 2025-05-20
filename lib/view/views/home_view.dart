@@ -418,6 +418,16 @@ class _HomeViewState extends State<HomeView> {
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
+                                            'Categoría: ${transaction['category']}',
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              color: Theme.of(context).brightness == Brightness.dark
+                                                  ? Colors.white70
+                                                  : Colors.black54,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
                                             'Monto: ${transaction['amount'] != null ? transaction['amount'].toString() : ''}',
                                             style: TextStyle(
                                               fontSize: 14,
