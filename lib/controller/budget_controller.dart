@@ -36,10 +36,10 @@ class BudgetController {
     }
 
     // SUMA el nuevo gasto manualmente para asegurar que la alerta salga en el momento correcto
-    totalSpent += newExpense;
+    double totalDespues = totalSpent + newExpense;
 
-    if (totalSpent > limit) {
-      // Mostrar recuadro de alerta SIEMPRE que se pase el límite
+    // Solo mostrar alerta si ANTES de este gasto no habías llegado al límite, y DESPUÉS sí llegas o lo superas
+    if (totalSpent > limit && totalDespues >= limit) {
       await showDialog(
         context: context,
         builder: (context) => AlertDialog(

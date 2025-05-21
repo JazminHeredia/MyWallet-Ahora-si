@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:my_wallet/config/router/app_router.dart'; 
 import 'package:my_wallet/model/budget_model.dart';
 import 'package:my_wallet/providers/theme_provider.dart';
+import 'package:my_wallet/config/theme/app_colors.dart';
 
 // Función principal que se ejecuta al iniciar la aplicación
 void main() async {
@@ -28,15 +29,22 @@ class MainApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => BudgetModel()), // Se crea e inyecta el BudgetModel que gestiona el presupuesto.
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
-      child: Consumer<ThemeProvider>(
-        builder: (context, themeProvider, child) {
-          return MaterialApp.router(
-            debugShowCheckedModeBanner: false,
-            title: 'My Wallet',
-            theme: themeProvider.themeData,
-            darkTheme: themeProvider.themeData,
-            themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-            routerConfig: appRouter,
+      child: Builder(
+        builder: (context) {
+          // Cargar preferencias y aplicar color personalizado al iniciar
+          final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
+          themeProvider.loadAndApplyPreferences(AppColors.colorOptions);
+          return Consumer<ThemeProvider>(
+            builder: (context, themeProvider, child) {
+              return MaterialApp.router(
+                debugShowCheckedModeBanner: false,
+                title: 'My Wallet',
+                theme: themeProvider.themeData,
+                darkTheme: themeProvider.themeData,
+                themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+                routerConfig: appRouter,
+              );
+            },
           );
         },
       ),

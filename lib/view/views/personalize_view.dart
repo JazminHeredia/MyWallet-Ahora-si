@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:my_wallet/providers/theme_provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:my_wallet/config/theme/app_colors.dart';
 
 class PersonalizeView extends StatelessWidget {
   const PersonalizeView({super.key});
@@ -9,16 +10,8 @@ class PersonalizeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    final colorOptions = [
-      {'name': 'Verde', 'color': const Color(0xFF388E3C)}, // Verde default
-      {'name': 'Rosa', 'color': Colors.pink},
-      {'name': 'Gris', 'color': Colors.grey},
-      {'name': 'Morado', 'color': Colors.purple},
-      {'name': 'Aqua', 'color': Colors.cyan},
-      {'name': 'Rojo', 'color': Colors.red},
-      {'name': 'Azul', 'color': Colors.blue},
-      {'name': 'Amarillo', 'color': Colors.yellow[700]},
-    ];
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorOptions = AppColors.colorOptions;
 
     return Scaffold(
       appBar: AppBar(
@@ -29,15 +22,18 @@ class PersonalizeView extends StatelessWidget {
         ),
       ),
       body: ListView(
-        children: colorOptions.map((option) {
+        children: colorOptions.asMap().entries.map((entry) {
+          final index = entry.key;
+          final option = entry.value;
+          final color = isDark ? option['dark'] as Color : option['light'] as Color;
           return ListTile(
-            leading: CircleAvatar(backgroundColor: option['color'] as Color),
+            leading: CircleAvatar(backgroundColor: color),
             title: Text(option['name'] as String),
-            trailing: themeProvider.primaryColor == option['color']
+            trailing: themeProvider.selectedColorIndex == index
                 ? const Icon(Icons.check, color: Colors.green)
                 : null,
             onTap: () {
-              themeProvider.setPrimaryColor(option['color'] as Color);
+              themeProvider.setPrimaryColorByIndex(index, isDark: isDark, colorOptions: colorOptions);
             },
           );
         }).toList(),

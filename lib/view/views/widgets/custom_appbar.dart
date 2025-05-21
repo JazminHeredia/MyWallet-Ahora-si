@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:my_wallet/service/provider/auth_provider.dart';
 import 'package:my_wallet/providers/theme_provider.dart';
+import 'package:my_wallet/config/theme/app_colors.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
@@ -11,6 +12,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final colorOptions = AppColors.colorOptions;
     return AppBar(
       backgroundColor: Theme.of(context).colorScheme.primary,
       title: Row(
@@ -25,7 +27,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               color: Colors.white,
             ),
             onPressed: () {
-              themeProvider.toggleTheme();
+              themeProvider.toggleTheme(colorOptions: colorOptions);
             },
             tooltip: themeProvider.isDarkMode ? 'Modo claro' : 'Modo oscuro',
           ),
