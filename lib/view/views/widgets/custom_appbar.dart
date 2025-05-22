@@ -12,7 +12,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    final colorOptions = AppColors.colorOptions;
+    
     return AppBar(
       backgroundColor: Theme.of(context).colorScheme.primary,
       title: Row(
@@ -27,7 +27,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               color: Colors.white,
             ),
             onPressed: () {
-              themeProvider.toggleTheme(colorOptions: colorOptions);
+              themeProvider.toggleTheme(colorOptions: AppColors.colorOptions);
             },
             tooltip: themeProvider.isDarkMode ? 'Modo claro' : 'Modo oscuro',
           ),
